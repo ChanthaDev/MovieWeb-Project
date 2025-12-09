@@ -65,7 +65,7 @@ export default function MovieDetail() {
         )}
       </div>
 
-      {/* ================= Movie Details ================= */}
+      {/* ==== Movie Details ==== */}
       <div className="max-w-6xl mx-auto p-6 mt-6 flex flex-col md:flex-row gap-6">
         {/* Left: Poster */}
         <div className="flex-shrink-0 w-full md:w-1/3">

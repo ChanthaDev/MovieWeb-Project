@@ -47,7 +47,7 @@ export default function Home() {
     <div className="dark:bg-gray-900 dark:text-white min-h-screen pt-[100px]">
       <Navbar />
 
-      {/* ================= Top Movie Banner ================= */}
+      {/* ==== Top Movie Banner ==== */}
       {currentBanner && (
         <div
           onClick={() => navigate(`/movie/${currentBanner.id}`)}
