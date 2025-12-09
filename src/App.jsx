@@ -4,10 +4,13 @@ import Movies from "./pages/Movies";
 import TVSeries from "./pages/TVSeries";
 import MovieDetail from "./pages/MovieDetail";
 import SeriesDetail from "./pages/SeriesDetail";
+import Footer from "./components/footer";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
     <Router>
+         <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/movies" element={<Movies />} />
@@ -15,6 +18,8 @@ function App() {
         <Route path="/movie/:id" element={<MovieDetail />} />
         <Route path="/series/:id" element={<SeriesDetail />} />
       </Routes>
+      <Footer/>
+
     </Router>
   );
 }
