@@ -6,6 +6,7 @@ import MovieDetail from "./pages/MovieDetail";
 import SeriesDetail from "./pages/SeriesDetail";
 import Footer from "./components/footer";
 import Navbar from "./components/Navbar";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/tv-series" element={<TVSeries />} />
         <Route path="/movie/:id" element={<MovieDetail />} />
         <Route path="/series/:id" element={<SeriesDetail />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
       <Footer/>
 
