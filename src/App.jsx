@@ -1,17 +1,22 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 import Home from "./pages/Home";
 import Movies from "./pages/Movies";
 import TVSeries from "./pages/TVSeries";
 import MovieDetail from "./pages/MovieDetail";
 import SeriesDetail from "./pages/SeriesDetail";
-import Footer from "./components/footer";
-import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
+
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 function App() {
   return (
     <Router>
-         <Navbar />
+      {/* Navbar always at top */}
+      <Navbar />
+
+      {/* All Page Routes */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/movies" element={<Movies />} />
@@ -20,8 +25,9 @@ function App() {
         <Route path="/series/:id" element={<SeriesDetail />} />
         <Route path="/login" element={<Login />} />
       </Routes>
-      <Footer/>
 
+      {/* Footer always stays bottom */}
+      <Footer />
     </Router>
   );
 }

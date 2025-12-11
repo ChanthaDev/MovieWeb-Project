@@ -6,7 +6,6 @@ import LoginModal from "./LoginModal";
 export default function Navbar() {
   const navigate = useNavigate();
 
-  // State for login popup
   const [openLogin, setOpenLogin] = useState(false);
 
   return (
@@ -64,7 +63,7 @@ export default function Navbar() {
             </button>
           </form>
 
-          {/* Account Icon → Open Login Popup */}
+          {/* Account */}
           <span
             className="flex group cursor-pointer"
             onClick={() => setOpenLogin(true)}
@@ -80,7 +79,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Login Popup Modal */}
+      {/* Login Modal */}
       <LoginModal open={openLogin} onClose={() => setOpenLogin(false)} />
     </div>
   );
