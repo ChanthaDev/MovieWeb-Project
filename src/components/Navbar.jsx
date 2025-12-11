@@ -5,8 +5,6 @@ import LoginModal from "./LoginModal";
 
 export default function Navbar() {
   const navigate = useNavigate();
-
-  // State for login popup
   const [openLogin, setOpenLogin] = useState(false);
 
   return (
@@ -18,7 +16,7 @@ export default function Navbar() {
           className="text-3xl font-bold text-red-600 cursor-pointer"
           onClick={() => navigate("/")}
         >
-          MovieHub
+          Weflix
         </div>
 
         {/* Menu */}
@@ -44,27 +42,26 @@ export default function Navbar() {
             Movies
           </li>
 
-          <li className="cursor-pointer hover:text-red-500 transition">
+          <li
+            className="cursor-pointer hover:text-red-500 transition"
+            onClick={() => navigate("/my-list")}  // <-- navigate to My List
+          >
             My List
           </li>
         </ul>
 
         {/* Search + Account */}
         <div className="flex gap-6 text-white text-xl items-center">
-
-          {/* Search Bar */}
           <form className="flex gap-3">
             <input
               placeholder="Search..."
               className="border rounded-full px-4 py-1 w-[250px] h-[35px] text-blue-50 bg-transparent focus:outline-none border-gray-400"
             />
-
             <button type="button" className="transition transform hover:scale-75">
               <Icon icon="mdi:magnify" width="35" height="35" className="text-red-600" />
             </button>
           </form>
 
-          {/* Account Icon → Open Login Popup */}
           <span
             className="flex group cursor-pointer"
             onClick={() => setOpenLogin(true)}
@@ -76,7 +73,6 @@ export default function Navbar() {
               className="transition group-hover:scale-75 group-hover:text-red-600"
             />
           </span>
-
         </div>
       </nav>
 

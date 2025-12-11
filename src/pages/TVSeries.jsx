@@ -1,32 +1,40 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
-import TrailerModal from "../components/TrailerModal";
-import { fetchMovieDetail, getTrailer } from "../data/api";
 
-// TMDB TV series genres mapping
-const tvGenreMap = {
-  16: "Animation",
-  18: "Drama",
-  35: "Comedy",
-  10759: "Action & Adventure",
-  10762: "Kids",
-  10765: "Sci-Fi & Fantasy",
-  10763: "News",
-  10764: "Reality",
-  10766: "Soap",
-  10767: "Talk",
+// TV series genres mapping
+const genres = [
+  "All",
+  "Animation",
+  "Drama",
+  "Comedy",
+  "Action & Adventure",
+  "Kids",
+  "Sci-Fi & Fantasy",
+  "News",
+  "Reality",
+  "Soap",
+  "Talk",
+];
+
+const genreMap = {
+  Animation: [16],
+  Drama: [18],
+  Comedy: [35],
+  "Action & Adventure": [10759],
+  Kids: [10762],
+  "Sci-Fi & Fantasy": [10765],
+  News: [10763],
+  Reality: [10764],
+  Soap: [10766],
+  Talk: [10767],
 };
 
 export default function TVSeries() {
   const [tvShows, setTvShows] = useState([]);
-  const [trailerKey, setTrailerKey] = useState(null);
   const [selectedGenre, setSelectedGenre] = useState("All");
   const navigate = useNavigate();
 
-  const genreNames = ["All", ...Object.values(tvGenreMap)];
-
-  // fetch popular TV shows (5 pages ≈ 100 shows)
   useEffect(() => {
     const fetchTv = async () => {
       let allShows = [];
@@ -42,18 +50,12 @@ export default function TVSeries() {
     fetchTv();
   }, []);
 
-  const openTrailer = async (show) => {
-    const detail = await fetchMovieDetail(show.id);
-    const key = getTrailer(detail);
-    setTrailerKey(key);
-  };
-
-  // Filter by genre using genre_ids
+  // Filter TV shows by genre
   const filteredShows =
     selectedGenre === "All"
       ? tvShows
       : tvShows.filter((show) =>
-          show.genre_ids.some((id) => tvGenreMap[id] === selectedGenre)
+          show.genre_ids.some((id) => genreMap[selectedGenre]?.includes(id))
         );
 
   return (
@@ -63,44 +65,46 @@ export default function TVSeries() {
       <div className="max-w-7xl mx-auto px-4 space-y-6">
         <h1 className="text-3xl font-bold mb-4">TV Series</h1>
 
-        {/* Genre Dropdown */}
+        {/* Genre dropdown */}
         <select
           className="mb-4 p-2 rounded bg-gray-800 text-white"
           value={selectedGenre}
           onChange={(e) => setSelectedGenre(e.target.value)}
         >
-          {genreNames.map((g, idx) => (
+          {genres.map((g, idx) => (
             <option key={idx} value={g}>
               {g}
             </option>
           ))}
         </select>
 
-        {/* TV Shows Grid: 6 rows × 8 cards → 48 shows */}
-        <div className="grid grid-cols-8 gap-4">
-          {filteredShows.slice(0, 48).map((show) => (
-            <div
-              key={show.id}
-              className="cursor-pointer"
-              onClick={() => navigate(`/series/${show.id}`)}
-            >
-              <img
-                src={`https://image.tmdb.org/t/p/w500${show.poster_path}`}
-                alt={show.name}
-                className="rounded-lg hover:scale-105 transition-transform"
-              />
-              <h3 className="text-white mt-2 font-semibold text-sm truncate">
-                {show.name}
-              </h3>
-              <p className="text-yellow-400 text-sm">
-                ⭐ {(show.vote_average || 0).toFixed(1)}
-              </p>
-            </div>
-          ))}
-        </div>
+        {/* TV Shows grid */}
+        {filteredShows.length === 0 ? (
+          <p className="text-white">No TV shows found.</p>
+        ) : (
+          <div className="grid grid-cols-8 gap-4">
+            {filteredShows.slice(0, 48).map((show) => (
+              <div
+                key={show.id}
+                className="cursor-pointer"
+                onClick={() => navigate(`/series/${show.id}`)}
+              >
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${show.poster_path}`}
+                  alt={show.name}
+                  className="rounded-lg hover:scale-105 transition-transform"
+                />
+                <h3 className="text-white mt-2 font-semibold text-sm truncate">
+                  {show.name}
+                </h3>
+                <p className="text-yellow-400 text-sm">
+                  ⭐ {(show.vote_average || 0).toFixed(1)}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-
-      <TrailerModal trailerKey={trailerKey} onClose={() => setTrailerKey(null)} />
     </div>
   );
 }

@@ -13,12 +13,10 @@ export default function MovieDetail() {
   const [commentText, setCommentText] = useState("");
   const [recommendations, setRecommendations] = useState([]);
 
-  // fetch movie detail
   useEffect(() => {
     fetchMovieDetail(id).then((data) => setMovie(data));
   }, [id]);
 
-  // fetch recommendations
   useEffect(() => {
     fetchMovies(1).then((data) => setRecommendations(data.results));
   }, []);
@@ -34,12 +32,22 @@ export default function MovieDetail() {
     setCommentText("");
   };
 
+  const handleAddToMyList = () => {
+    const existingList = JSON.parse(localStorage.getItem("myList")) || [];
+    if (!existingList.find(item => item.id === movie.id && item.type === "movie")) {
+      existingList.push({ id: movie.id, title: movie.title, type: "movie", poster_path: movie.poster_path });
+      localStorage.setItem("myList", JSON.stringify(existingList));
+      alert("Added to My List!");
+    } else {
+      alert("Movie already in My List");
+    }
+  };
+
   return (
     <div className="dark:bg-gray-900 dark:text-white min-h-screen">
-      {/* ================= Navbar ================= */}
       <Navbar />
 
-      {/* ================= Trailer Banner ================= */}
+      {/* Trailer */}
       <div className="max-w-6xl mx-auto p-6 mt-6 relative">
         {trailer ? (
           <div className="relative w-full h-[600px] bg-black rounded overflow-hidden">
@@ -65,25 +73,29 @@ export default function MovieDetail() {
         )}
       </div>
 
-      {/* ==== Movie Details ==== */}
+      {/* Details */}
       <div className="max-w-6xl mx-auto p-6 mt-6 flex flex-col md:flex-row gap-6">
-        {/* Left: Poster */}
         <div className="flex-shrink-0 w-full md:w-1/3">
           <img
             src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
             alt={movie.title}
             className="rounded shadow-lg"
           />
+          <button
+            onClick={handleAddToMyList}
+            className="bg-green-600 px-4 py-2 rounded text-white mt-4 w-full"
+          >
+            Add to My List
+          </button>
         </div>
 
-        {/* Right: Details */}
         <div className="flex-1 text-white">
           <h1 className="text-3xl font-bold mb-4">{movie.title}</h1>
           <p className="mb-2">{movie.overview}</p>
           <p className="mb-2">Release: {movie.release_date}</p>
           <p className="mb-2">Rating: ⭐ {movie.vote_average.toFixed(1)}</p>
 
-          {/* ================= Cast ================= */}
+          {/* Cast */}
           <div className="mt-4">
             <h2 className="text-xl font-bold mb-2">Cast</h2>
             <div className="grid grid-cols-6 gap-4">
@@ -107,10 +119,9 @@ export default function MovieDetail() {
         </div>
       </div>
 
-      {/* ================= Comments Section ================= */}
+      {/* Comments */}
       <div className="max-w-6xl mx-auto p-6 mt-6">
         <h2 className="text-2xl font-bold mb-4">Comments</h2>
-
         <form onSubmit={handleCommentSubmit} className="flex flex-col gap-2 mb-4">
           <textarea
             className="w-full p-2 rounded bg-gray-800 text-white"
@@ -118,25 +129,19 @@ export default function MovieDetail() {
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
           />
-          <button
-            type="submit"
-            className="bg-blue-600 px-4 py-2 rounded text-white w-32"
-          >
+          <button type="submit" className="bg-blue-600 px-4 py-2 rounded text-white w-32">
             Post Comment
           </button>
         </form>
-
         <div className="flex flex-col gap-3">
           {comments.length === 0 && <p>No comments yet.</p>}
           {comments.map((c, idx) => (
-            <div key={idx} className="bg-gray-800 p-3 rounded">
-              {c}
-            </div>
+            <div key={idx} className="bg-gray-800 p-3 rounded">{c}</div>
           ))}
         </div>
       </div>
 
-      {/* ================= Recommendations Section ================= */}
+      {/* Recommendations */}
       <div className="max-w-6xl mx-auto p-6 mt-6">
         <h2 className="text-2xl font-bold mb-4">You Might Also Like</h2>
         <div className="grid grid-cols-6 gap-4">
@@ -146,7 +151,6 @@ export default function MovieDetail() {
         </div>
       </div>
 
-      {/* ================= Trailer Modal ================= */}
       <TrailerModal trailerKey={trailerKey} onClose={() => setTrailerKey(null)} />
     </div>
   );

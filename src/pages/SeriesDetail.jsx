@@ -13,12 +13,10 @@ export default function SeriesDetail() {
   const [commentText, setCommentText] = useState("");
   const [recommendations, setRecommendations] = useState([]);
 
-  // Fetch series detail
   useEffect(() => {
     fetchSeriesDetail(id).then((data) => setSeries(data));
   }, [id]);
 
-  // Fetch recommendations (TV series)
   useEffect(() => {
     fetchTVSeries(1).then((data) => setRecommendations(data.results));
   }, []);
@@ -34,11 +32,22 @@ export default function SeriesDetail() {
     setCommentText("");
   };
 
+  const handleAddToMyList = () => {
+    const existingList = JSON.parse(localStorage.getItem("myList")) || [];
+    if (!existingList.find(item => item.id === series.id && item.type === "series")) {
+      existingList.push({ id: series.id, title: series.name, type: "series", poster_path: series.poster_path });
+      localStorage.setItem("myList", JSON.stringify(existingList));
+      alert("Added to My List!");
+    } else {
+      alert("Series already in My List");
+    }
+  };
+
   return (
     <div className="dark:bg-gray-900 dark:text-white min-h-screen">
       <Navbar />
 
-      {/* Trailer Banner */}
+      {/* Trailer */}
       <div className="max-w-6xl mx-auto p-6 mt-6 relative">
         {trailer ? (
           <div className="relative w-full h-[600px] bg-black rounded overflow-hidden">
@@ -64,22 +73,22 @@ export default function SeriesDetail() {
         )}
       </div>
 
-      {/* Series Details */}
+      {/* Details */}
       <div className="max-w-6xl mx-auto p-6 mt-6 flex flex-col md:flex-row gap-6">
-        {/* Left: Poster */}
         <div className="flex-shrink-0 w-full md:w-1/3">
           <img
-            src={
-              series.poster_path
-                ? `https://image.tmdb.org/t/p/w500${series.poster_path}`
-                : "https://via.placeholder.com/500x750?text=No+Image"
-            }
+            src={series.poster_path ? `https://image.tmdb.org/t/p/w500${series.poster_path}` : "https://via.placeholder.com/500x750?text=No+Image"}
             alt={series.name}
             className="rounded shadow-lg w-full"
           />
+          <button
+            onClick={handleAddToMyList}
+            className="bg-green-600 px-4 py-2 rounded text-white mt-4 w-full"
+          >
+            Add to My List
+          </button>
         </div>
 
-        {/* Right: Details */}
         <div className="flex-1 text-white">
           <h1 className="text-3xl font-bold mb-4">{series.name}</h1>
           <p className="mb-2">{series.overview}</p>
@@ -93,11 +102,7 @@ export default function SeriesDetail() {
               {series.credits?.cast.slice(0, 6).map((actor) => (
                 <div key={actor.id} className="flex flex-col items-center text-center">
                   <img
-                    src={
-                      actor.profile_path
-                        ? `https://image.tmdb.org/t/p/w200${actor.profile_path}`
-                        : "https://via.placeholder.com/100?text=No+Image"
-                    }
+                    src={actor.profile_path ? `https://image.tmdb.org/t/p/w200${actor.profile_path}` : "https://via.placeholder.com/100?text=No+Image"}
                     alt={actor.name}
                     className="w-16 h-16 object-cover rounded-full mb-1 border-2 border-gray-700"
                   />
@@ -120,10 +125,7 @@ export default function SeriesDetail() {
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
           />
-          <button
-            type="submit"
-            className="bg-blue-600 px-4 py-2 rounded text-white w-32"
-          >
+          <button type="submit" className="bg-blue-600 px-4 py-2 rounded text-white w-32">
             Post Comment
           </button>
         </form>
@@ -145,7 +147,6 @@ export default function SeriesDetail() {
         </div>
       </div>
 
-      {/* Trailer Modal */}
       <TrailerModal trailerKey={trailerKey} onClose={() => setTrailerKey(null)} />
     </div>
   );

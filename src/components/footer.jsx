@@ -7,9 +7,9 @@ const footer = () => {
 
         {/* Logo + Description */}
         <div>
-          <h2 className="text-2xl font-bold text-red-500 mb-3">MovieHub</h2>
+          <h2 className="text-2xl font-bold text-red-500 mb-3">Weflix</h2>
           <p className="text-sm leading-6">
-            Website មើលភ្លើងឆាកខ្មែរ & ខ្សែភាពយន្តបរទេស  
+            Website មើលខ្សែភាពយន្តខ្មែរ & ខ្សែភាពយន្តបរទេស  
             មើលបានគ្រប់ប្រភេទ HD Full.
           </p>
         </div>
