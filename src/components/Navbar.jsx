@@ -76,7 +76,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Login Popup Modal */}
+      {/* Login Modal */}
       <LoginModal open={openLogin} onClose={() => setOpenLogin(false)} />
     </div>
   );

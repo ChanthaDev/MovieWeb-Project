@@ -6,9 +6,11 @@ import TVSeries from "./pages/TVSeries";
 import MovieDetail from "./pages/MovieDetail";
 import SeriesDetail from "./pages/SeriesDetail";
 import MyList from "./pages/MyList";
+
+import Login from "./pages/Login";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/footer";
-import Login from "./pages/Login";
 
 function App() {
   const [myList, setMyList] = useState([]); // State រក្សា My List
