@@ -54,9 +54,11 @@ export default function LoginModal({ open, onClose }) {
           className="mt-6 w-full text-gray-400 hover:text-white text-sm"
           onClick={onClose}
         >
+        
           Close
-        </button>
+        </button>d
       </div>
     </div>
   );
+  
 }
