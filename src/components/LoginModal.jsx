@@ -1,20 +1,32 @@
-import React from "react";
+import { useState } from "react";
 
 export default function LoginModal({ open, onClose }) {
+  const [isSignup, setIsSignup] = useState(false);
+
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-[9999]">
-
-      {/* Modal Box */}
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]">
       <div className="bg-gray-900 w-[400px] rounded-xl p-8 shadow-lg border border-gray-700 animate-fadeIn">
 
-        {/* Title */}
+        {/* TITLE */}
         <h2 className="text-3xl font-bold text-center text-red-600 mb-6">
-          Login
+          {isSignup ? "Sign Up" : "Login"}
         </h2>
 
-        {/* Email */}
+        {/* NAME (SIGN UP ONLY) */}
+        {isSignup && (
+          <div className="flex flex-col mb-4">
+            <label className="text-gray-300 mb-1">Full Name</label>
+            <input
+              type="text"
+              placeholder="Enter your name"
+              className="px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:border-red-600"
+            />
+          </div>
+        )}
+
+        {/* EMAIL */}
         <div className="flex flex-col mb-4">
           <label className="text-gray-300 mb-1">Email</label>
           <input
@@ -24,7 +36,7 @@ export default function LoginModal({ open, onClose }) {
           />
         </div>
 
-        {/* Password */}
+        {/* PASSWORD */}
         <div className="flex flex-col mb-6">
           <label className="text-gray-300 mb-1">Password</label>
           <input
@@ -34,31 +46,33 @@ export default function LoginModal({ open, onClose }) {
           />
         </div>
 
-        {/* Login Button */}
-        <button
-          className="w-full bg-red-600 py-2 rounded-lg text-white font-semibold hover:bg-red-700 transition"
-        >
-          Login
+        {/* SUBMIT BUTTON */}
+        <button className="w-full bg-red-600 py-2 rounded-lg text-white font-semibold hover:bg-red-700 transition">
+          {isSignup ? "Create Account" : "Login"}
         </button>
 
-        {/* Signup Link */}
+        {/* SWITCH LOGIN / SIGN UP */}
         <p className="text-gray-400 text-center mt-4 text-sm">
-          Don't have an account?{" "}
-          <span className="text-red-500 cursor-pointer hover:underline">
-            Sign Up
+          {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
+          <span
+            className="text-red-500 cursor-pointer hover:underline"
+            onClick={() => setIsSignup(!isSignup)}
+          >
+            {isSignup ? "Login" : "Sign Up"}
           </span>
         </p>
 
-        {/* Close Button */}
+        {/* CLOSE */}
         <button
           className="mt-6 w-full text-gray-400 hover:text-white text-sm"
-          onClick={onClose}
+          onClick={() => {
+            setIsSignup(false);
+            onClose();
+          }}
         >
-        
           Close
-        </button>d
+        </button>
       </div>
     </div>
   );
-  
 }

@@ -13,7 +13,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/footer";
 
 function App() {
-  const [myList, setMyList] = useState([]); // State for My List
+  const [myList, setMyList] = useState([]); // My List state
 
   return (
     <Router>
@@ -23,7 +23,7 @@ function App() {
         {/* Home + Search */}
         <Route path="/" element={<Home />} />
 
-        {/* Movie + Series Lists */}
+        {/* Movie + TV pages */}
         <Route
           path="/movies"
           element={<Movies myList={myList} setMyList={setMyList} />}
@@ -33,7 +33,7 @@ function App() {
           element={<TVSeries myList={myList} setMyList={setMyList} />}
         />
 
-        {/* Detail Pages */}
+        {/* Detail pages */}
         <Route
           path="/movie/:id"
           element={<MovieDetail myList={myList} setMyList={setMyList} />}
@@ -43,10 +43,10 @@ function App() {
           element={<SeriesDetail myList={myList} setMyList={setMyList} />}
         />
 
-        {/* My List Page */}
+        {/* My List */}
         <Route path="/my-list" element={<MyList myList={myList} />} />
 
-        {/* Login */}
+        {/* Login page (optional) */}
         <Route path="/login" element={<Login />} />
       </Routes>
 

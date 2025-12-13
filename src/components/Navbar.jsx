@@ -8,8 +8,8 @@ export default function Navbar() {
   const [openLogin, setOpenLogin] = useState(false);
 
   return (
-    <div className="w-full h-[100px] bg-gray-900 fixed top-0 left-0 z-50 shadow-lg">
-      <nav className="max-w-full mx-auto h-full flex items-center justify-between px-6">
+    <>
+      <div className="w-full h-[100px] bg-gray-900 fixed top-0 z-50 flex items-center px-6 justify-between">
 
         {/* Logo */}
         <div
@@ -20,49 +20,49 @@ export default function Navbar() {
         </div>
 
         {/* Menu */}
-        <ul className="hidden md:flex gap-8 text-white font-semibold text-lg">
-          <li className="cursor-pointer hover:text-red-500 transition" onClick={() => navigate("/")}>Home</li>
-          <li className="cursor-pointer hover:text-red-500 transition" onClick={() => navigate("/tv-series")}>TV Shows</li>
-          <li className="cursor-pointer hover:text-red-500 transition" onClick={() => navigate("/movies")}>Movies</li>
-          <li className="cursor-pointer hover:text-red-500 transition" onClick={() => navigate("/my-list")}>My List</li>
+        <ul className="hidden md:flex gap-8 text-white font-semibold">
+          <li onClick={() => navigate("/")} className="cursor-pointer hover:text-red-500">Home</li>
+          <li onClick={() => navigate("/movies")} className="cursor-pointer hover:text-red-500">Movies</li>
+          <li onClick={() => navigate("/tv-series")} className="cursor-pointer hover:text-red-500">TV Shows</li>
+          <li onClick={() => navigate("/my-list")} className="cursor-pointer hover:text-red-500">My List</li>
         </ul>
 
         {/* Search + Account */}
-        <div className="flex gap-6 text-white text-xl items-center">
+        <div className="flex items-center gap-5 text-white">
 
-          {/* SEARCH FORM */}
+          {/* Search */}
           <form
-            className="flex gap-3"
             onSubmit={(e) => {
               e.preventDefault();
-              const query = e.target.search.value;
+              const query = e.target.search.value.trim();
+              if (!query) return;
               navigate(`/?search=${query}`);
+              e.target.reset();
             }}
+            className="flex gap-2"
           >
             <input
               name="search"
               placeholder="Search..."
-              className="border rounded-full px-4 py-1 w-[250px] h-[35px] text-blue-50 bg-transparent focus:outline-none border-gray-400"
+              className="bg-transparent border border-gray-500 rounded-full px-4 py-1 text-sm"
             />
-            <button type="submit" className="transition transform hover:scale-75">
-              <Icon icon="mdi:magnify" width="35" height="35" className="text-white hover:text-red-600" />
+            <button type="submit">
+              <Icon icon="mdi:magnify" width="28" />
             </button>
           </form>
 
           {/* Account */}
-          <span className="flex group cursor-pointer" onClick={() => setOpenLogin(true)}>
-            <Icon
-              icon="mdi:account"
-              width="35"
-              height="35"
-              className="transition group-hover:scale-75 group-hover:text-red-600"
-            />
-          </span>
+          <Icon
+            icon="mdi:account"
+            width="32"
+            className="cursor-pointer hover:text-red-600"
+            onClick={() => setOpenLogin(true)}
+          />
         </div>
-      </nav>
+      </div>
 
-      {/* Login Modal */}
+      {/* Login Popup */}
       <LoginModal open={openLogin} onClose={() => setOpenLogin(false)} />
-    </div>
+    </>
   );
 }
