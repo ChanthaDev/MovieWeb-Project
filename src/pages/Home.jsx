@@ -68,7 +68,7 @@ export default function Home() {
   const currentBanner = topMovies[bannerIndex];
 
   return (
-    <div className="dark:bg-gray-900 dark:text-white min-h-screen pt-[100px]">
+    <div className="dark:bg-gray-900 dark:text-white min-h-screen pt-[100px] pb-[100px]">
 
       {/* =======================================
           🔍 SHOW SEARCH RESULTS IF SEARCHING

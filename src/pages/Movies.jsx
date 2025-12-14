@@ -78,7 +78,7 @@ export default function Movies() {
   );
 
   return (
-    <div className="dark:bg-gray-900 dark:text-white min-h-screen pt-[100px]">
+    <div className="dark:bg-gray-900 dark:text-white min-h-screen pt-[150px] pb-[100px]">
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 space-y-6">

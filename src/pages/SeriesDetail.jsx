@@ -1,25 +1,46 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import TrailerModal from "../components/TrailerModal";
-import MovieCard from "../components/MovieCard";
-import { fetchSeriesDetail, fetchTVSeries, getTrailer } from "../data/api";
+import MovieCard from "../components/MovieCard"; // ប្រើដូច Card របស់ Movies
+import { fetchSeriesDetail, getTrailer } from "../data/api";
 
 export default function SeriesDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [series, setSeries] = useState(null);
   const [trailerKey, setTrailerKey] = useState(null);
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
   const [recommendations, setRecommendations] = useState([]);
+  const [inMyList, setInMyList] = useState(false); // state add/remove
 
+  // Fetch series detail
   useEffect(() => {
-    fetchSeriesDetail(id).then((data) => setSeries(data));
+    const fetchDetail = async () => {
+      try {
+        const data = await fetchSeriesDetail(id);
+        setSeries(data);
+
+        // Check if series is already in My List
+        const existingList = JSON.parse(localStorage.getItem("myList") || "[]");
+        const exists = existingList.find(
+          (item) => item.id === data.id && item.type === "series"
+        );
+        setInMyList(!!exists);
+
+        // Fetch recommendations
+        const res = await fetch(
+          `https://api.themoviedb.org/3/tv/${id}/recommendations?api_key=6e7e94041df0fb864babae0c56e66a2d&language=en-US&page=1`
+        );
+        const recData = await res.json();
+        setRecommendations(recData.results || []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchDetail();
   }, [id]);
-
-  useEffect(() => {
-    fetchTVSeries(1).then((data) => setRecommendations(data.results));
-  }, []);
 
   if (!series) return <p className="text-white p-4">Loading...</p>;
 
@@ -27,24 +48,37 @@ export default function SeriesDetail() {
 
   const handleCommentSubmit = (e) => {
     e.preventDefault();
-    if (commentText.trim() === "") return;
+    if (!commentText.trim()) return;
     setComments([...comments, commentText.trim()]);
     setCommentText("");
   };
 
-  const handleAddToMyList = () => {
-    const existingList = JSON.parse(localStorage.getItem("myList")) || [];
-    if (!existingList.find(item => item.id === series.id && item.type === "series")) {
-      existingList.push({ id: series.id, title: series.name, type: "series", poster_path: series.poster_path });
-      localStorage.setItem("myList", JSON.stringify(existingList));
-      alert("Added to My List!");
+  const handleToggleMyList = () => {
+    const existingList = JSON.parse(localStorage.getItem("myList") || "[]");
+    if (inMyList) {
+      // Remove series
+      const newList = existingList.filter(
+        (item) => !(item.id === series.id && item.type === "series")
+      );
+      localStorage.setItem("myList", JSON.stringify(newList));
+      setInMyList(false);
+      alert("Removed from My List");
     } else {
-      alert("Series already in My List");
+      // Add series
+      existingList.push({
+        id: series.id,
+        title: series.name,
+        type: "series",
+        poster_path: series.poster_path,
+      });
+      localStorage.setItem("myList", JSON.stringify(existingList));
+      setInMyList(true);
+      alert("Added to My List!");
     }
   };
 
   return (
-    <div className="dark:bg-gray-900 dark:text-white min-h-screen">
+    <div className="dark:bg-gray-900 dark:text-white min-h-screen pb-[100px] ">
       <Navbar />
 
       {/* Trailer */}
@@ -56,7 +90,7 @@ export default function SeriesDetail() {
               title={series.name}
               className="w-full h-full"
               allowFullScreen
-            ></iframe>
+            />
             <button
               onClick={() => setTrailerKey(trailer)}
               className="absolute bottom-4 right-4 bg-red-600 px-4 py-2 rounded text-white"
@@ -82,10 +116,10 @@ export default function SeriesDetail() {
             className="rounded shadow-lg w-full"
           />
           <button
-            onClick={handleAddToMyList}
-            className="bg-green-600 px-4 py-2 rounded text-white mt-4 w-full"
+            onClick={handleToggleMyList}
+            className={`px-4 py-2 rounded text-white mt-4 w-full ${inMyList ? "bg-red-600" : "bg-green-600"}`}
           >
-            Add to My List
+            {inMyList ? "Remove from My List" : "Add to My List"}
           </button>
         </div>
 
@@ -141,8 +175,12 @@ export default function SeriesDetail() {
       <div className="max-w-6xl mx-auto p-6 mt-6">
         <h2 className="text-2xl font-bold mb-4">You Might Also Like</h2>
         <div className="grid grid-cols-6 gap-4">
-          {recommendations.slice(0, 12).map((m) => (
-            <MovieCard key={m.id} movie={m} />
+          {recommendations.slice(0, 12).map((rec) => (
+            <MovieCard
+              key={rec.id}
+              movie={{...rec, type: "series"}} // បន្ថែម type series
+              onClick={() => navigate(`/series/${rec.id}`)}
+            />
           ))}
         </div>
       </div>

@@ -9,7 +9,7 @@ import SeriesDetail from "./pages/SeriesDetail";
 import MyList from "./pages/MyList";
 import Login from "./pages/Login";
 
-import Navbar from "./components/Navbar";
+import Navbar from "./components/navbar";
 import Footer from "./components/footer";
 
 function App() {

@@ -9,7 +9,7 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="w-full h-[100px] bg-gray-900 fixed top-0 z-50 flex items-center px-6 justify-between">
+      <div className="w-full h-[100px] bg-gray-900 fixed top-0 z-50 flex items-center px-6 justify-between shadow-2xl">
 
         {/* Logo */}
         <div

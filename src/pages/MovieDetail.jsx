@@ -1,25 +1,42 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { fetchMovieDetail, getTrailer, fetchMovies } from "../data/api";
-import TrailerModal from "../components/TrailerModal";
-import MovieCard from "../components/MovieCard";
+import { useParams, useNavigate } from "react-router-dom";
+import { fetchMovieDetail, getTrailer } from "../data/api";
 import Navbar from "../components/Navbar";
+import TrailerModal from "../components/TrailerModal";
 
 export default function MovieDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [movie, setMovie] = useState(null);
   const [trailerKey, setTrailerKey] = useState(null);
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
   const [recommendations, setRecommendations] = useState([]);
+  const [inMyList, setInMyList] = useState(false); // state add/remove
 
   useEffect(() => {
-    fetchMovieDetail(id).then((data) => setMovie(data));
+    const fetchDetail = async () => {
+      try {
+        const data = await fetchMovieDetail(id);
+        setMovie(data);
+
+        // check if in My List
+        const existingList = JSON.parse(localStorage.getItem("myList") || "[]");
+        const exists = existingList.find((item) => item.id === data.id && item.type === "movie");
+        setInMyList(!!exists);
+
+        // Fetch recommendations
+        const res = await fetch(
+          `https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=6e7e94041df0fb864babae0c56e66a2d&language=en-US&page=1`
+        );
+        const recData = await res.json();
+        setRecommendations(recData.results || []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchDetail();
   }, [id]);
-
-  useEffect(() => {
-    fetchMovies(1).then((data) => setRecommendations(data.results));
-  }, []);
 
   if (!movie) return <p className="text-white p-4">Loading...</p>;
 
@@ -27,24 +44,35 @@ export default function MovieDetail() {
 
   const handleCommentSubmit = (e) => {
     e.preventDefault();
-    if (commentText.trim() === "") return;
+    if (!commentText.trim()) return;
     setComments([...comments, commentText.trim()]);
     setCommentText("");
   };
 
-  const handleAddToMyList = () => {
-    const existingList = JSON.parse(localStorage.getItem("myList")) || [];
-    if (!existingList.find(item => item.id === movie.id && item.type === "movie")) {
-      existingList.push({ id: movie.id, title: movie.title, type: "movie", poster_path: movie.poster_path });
-      localStorage.setItem("myList", JSON.stringify(existingList));
-      alert("Added to My List!");
+  const handleToggleMyList = () => {
+    const existingList = JSON.parse(localStorage.getItem("myList") || "[]");
+    if (inMyList) {
+      // remove
+      const newList = existingList.filter((item) => !(item.id === movie.id && item.type === "movie"));
+      localStorage.setItem("myList", JSON.stringify(newList));
+      setInMyList(false);
+      alert("Removed from My List");
     } else {
-      alert("Movie already in My List");
+      // add
+      existingList.push({
+        id: movie.id,
+        title: movie.title,
+        type: "movie",
+        poster_path: movie.poster_path,
+      });
+      localStorage.setItem("myList", JSON.stringify(existingList));
+      setInMyList(true);
+      alert("Added to My List!");
     }
   };
 
   return (
-    <div className="dark:bg-gray-900 dark:text-white min-h-screen">
+    <div className="dark:bg-gray-900 dark:text-white min-h-screen pb-[100px]">
       <Navbar />
 
       {/* Trailer */}
@@ -56,7 +84,7 @@ export default function MovieDetail() {
               title={movie.title}
               className="w-full h-full"
               allowFullScreen
-            ></iframe>
+            />
             <button
               onClick={() => setTrailerKey(trailer)}
               className="absolute bottom-4 right-4 bg-red-600 px-4 py-2 rounded text-white"
@@ -79,13 +107,13 @@ export default function MovieDetail() {
           <img
             src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
             alt={movie.title}
-            className="rounded shadow-lg"
+            className="rounded shadow-lg w-full"
           />
           <button
-            onClick={handleAddToMyList}
-            className="bg-green-600 px-4 py-2 rounded text-white mt-4 w-full"
+            onClick={handleToggleMyList}
+            className={`px-4 py-2 rounded text-white mt-4 w-full ${inMyList ? "bg-red-600" : "bg-green-600"}`}
           >
-            Add to My List
+            {inMyList ? "Remove from My List" : "Add to My List"}
           </button>
         </div>
 
@@ -93,7 +121,7 @@ export default function MovieDetail() {
           <h1 className="text-3xl font-bold mb-4">{movie.title}</h1>
           <p className="mb-2">{movie.overview}</p>
           <p className="mb-2">Release: {movie.release_date}</p>
-          <p className="mb-2">Rating: ⭐ {movie.vote_average.toFixed(1)}</p>
+          <p className="mb-2">Rating: ⭐ {movie.vote_average?.toFixed(1)}</p>
 
           {/* Cast */}
           <div className="mt-4">
@@ -102,11 +130,7 @@ export default function MovieDetail() {
               {movie.credits?.cast.slice(0, 6).map((actor) => (
                 <div key={actor.cast_id} className="flex flex-col items-center text-center">
                   <img
-                    src={
-                      actor.profile_path
-                        ? `https://image.tmdb.org/t/p/w200${actor.profile_path}`
-                        : "https://via.placeholder.com/100?text=No+Image"
-                    }
+                    src={actor.profile_path ? `https://image.tmdb.org/t/p/w200${actor.profile_path}` : "https://via.placeholder.com/100?text=No+Image"}
                     alt={actor.name}
                     className="w-16 h-16 object-cover rounded-full mb-1 border-2 border-gray-700"
                   />
@@ -145,8 +169,20 @@ export default function MovieDetail() {
       <div className="max-w-6xl mx-auto p-6 mt-6">
         <h2 className="text-2xl font-bold mb-4">You Might Also Like</h2>
         <div className="grid grid-cols-6 gap-4">
-          {recommendations.slice(0, 12).map((m) => (
-            <MovieCard key={m.id} movie={m} />
+          {recommendations.slice(0, 12).map((rec) => (
+            <div
+              key={rec.id}
+              className="cursor-pointer"
+              onClick={() => navigate(`/movie/${rec.id}`)}
+            >
+              <img
+                src={`https://image.tmdb.org/t/p/w500${rec.poster_path}`}
+                alt={rec.title}
+                className="rounded-lg hover:scale-105 transition-transform"
+              />
+              <h3 className="text-white mt-2 font-semibold text-sm truncate">{rec.title}</h3>
+              <p className="text-yellow-400 text-sm">⭐ {(rec.vote_average || 0).toFixed(1)}</p>
+            </div>
           ))}
         </div>
       </div>
