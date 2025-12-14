@@ -103,7 +103,7 @@ export default function MovieDetail() {
 
       {/* Details */}
       <div className="max-w-6xl mx-auto p-6 mt-6 flex flex-col md:flex-row gap-6">
-        <div className="flex-shrink w-full md:w-1/3">
+        <div className="shrink w-full md:w-1/3">
           <img
             src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
             alt={movie.title}
