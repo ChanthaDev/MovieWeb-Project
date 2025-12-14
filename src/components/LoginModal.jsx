@@ -64,7 +64,7 @@ export default function LoginModal({ open, onClose }) {
 
         {/* CLOSE */}
         <button
-          className="mt-6 w-full text-gray-400 hover:text-white text-sm"
+          className="mt-6 w-full text-gray-400 hover:text-white text-sm "
           onClick={() => {
             setIsSignup(false);
             onClose();
