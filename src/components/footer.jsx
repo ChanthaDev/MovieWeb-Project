@@ -4,7 +4,7 @@ const Footer = () => {
   const navigate = useNavigate();
 
   return (
-    <footer className="bg-gray-900 text-gray-300 py-10 mt-10">
+    <footer className="bg-gray-900 text-gray-300 py-10 border-t border-gray-700">
       <div className="container mx-auto px-5 grid grid-cols-1 md:grid-cols-4 gap-8">
 
         {/* Logo + Description */}
@@ -14,10 +14,14 @@ const Footer = () => {
             Website មើលខ្សែភាពយន្តខ្មែរ & ខ្សែភាពយន្តបរទេស  
             មើលបានគ្រប់ប្រភេទ HD Full.
           </p>
+          <br />
+          <p>
+            Website to watch Khmer & foreign films, watch all types of HD Full
+          </p>
         </div>
 
         {/* Menu */}
-        <div>
+        <div className="pl-[100px]">
           <h3 className="text-lg font-semibold mb-3 text-white">Menu</h3>
           <ul className="space-y-2">
             <li
@@ -47,42 +51,7 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Categories – directly filter movies */}
-        <div>
-          <h3 className="text-lg font-semibold mb-3 text-white">Categories</h3>
-          <ul className="space-y-2">
-            <li
-              className="hover:text-red-500 cursor-pointer"
-              onClick={() => navigate("/movies?category=khmer")}
-            >
-              Khmer Movies
-            </li>
-            <li
-              className="hover:text-red-500 cursor-pointer"
-              onClick={() => navigate("/movies?category=thai")}
-            >
-              Thai Movies
-            </li>
-            <li
-              className="hover:text-red-500 cursor-pointer"
-              onClick={() => navigate("/movies?category=korean")}
-            >
-              Korean Movies
-            </li>
-            <li
-              className="hover:text-red-500 cursor-pointer"
-              onClick={() => navigate("/movies?category=chinese")}
-            >
-              Chinese Movies
-            </li>
-            <li
-              className="hover:text-red-500 cursor-pointer"
-              onClick={() => navigate("/movies?category=action")}
-            >
-              Action / Adventure
-            </li>
-          </ul>
-        </div>
+      
 
         {/* Social Media */}
         <div>
@@ -119,7 +88,7 @@ const Footer = () => {
 
       {/* Copyright */}
       <div className="border-t border-gray-700 mt-8 pt-5 text-center text-sm">
-        © 2025 MovieHub. All rights reserved.
+        © 2025 Weflix. All rights reserved.
       </div>
     </footer>
   );

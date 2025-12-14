@@ -1,21 +1,35 @@
-import { Link } from "react-router-dom";
+// src/components/MovieCard.jsx
+import { useNavigate } from "react-router-dom";
 
 export default function MovieCard({ movie }) {
-  if (!movie) return null;
+  const navigate = useNavigate();
+
+  // Use title for movies, name for TV series
+  const displayTitle = movie.title || movie.name;
+
   return (
-    <Link to={`/movie/${movie.id}`}>
-      <div className="rounded-lg overflow-hidden bg-gray-900 text-white shadow hover:scale-105 transition cursor-pointer">
-        <img
-          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-          alt={movie.title}
-          className="w-full h-[300px] object-cover"
-        />
-        <div className="p-3">
-          <h2 className="font-bold text-lg line-clamp-1">{movie.title}</h2>
-          <p className="text-sm opacity-70">{movie.release_date?.slice(0, 4)}</p>
-          <p className="text-yellow-400">⭐ {movie.vote_average?.toFixed(1)}</p>
-        </div>
-      </div>
-    </Link>
+    <div
+      className="cursor-pointer hover:scale-105 transition-transform"
+      onClick={() =>
+        navigate(movie.title ? `/movie/${movie.id}` : `/series/${movie.id}`)
+      }
+    >
+      {/* Movie/Series Poster */}
+      <img
+        src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+        alt={displayTitle}
+        className="rounded-lg w-full h-[300px] object-cover"
+      />
+
+      {/* Title */}
+      <h3 className="text-white mt-2 font-semibold text-sm truncate">
+        {displayTitle}
+      </h3>
+
+      {/* Rating */}
+      <p className="text-yellow-400 text-sm">
+        ⭐ {(movie.vote_average || 0).toFixed(1)}
+      </p>
+    </div>
   );
 }
