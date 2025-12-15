@@ -6,31 +6,38 @@ import LoginModal from "./LoginModal";
 export default function Navbar() {
   const navigate = useNavigate();
   const [openLogin, setOpenLogin] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
+
+  const handleNav = (path) => {
+    navigate(path);
+    setOpenMenu(false);
+  };
 
   return (
     <>
-      <div className="w-full h-[100px] bg-gray-900 fixed top-0 z-50 flex items-center px-6 justify-between shadow-2xl">
+      {/* Navbar */}
+      <div className="w-full h-[80px] md:h-[100px] bg-gray-900 fixed top-0 z-50 flex items-center px-4 md:px-6 justify-between shadow-2xl">
 
         {/* Logo */}
         <div
-          className="text-3xl font-bold text-red-600 cursor-pointer"
-          onClick={() => navigate("/")}
+          className="text-2xl md:text-3xl font-bold text-red-600 cursor-pointer"
+          onClick={() => handleNav("/")}
         >
           Weflix
         </div>
 
-        {/* Menu */}
+        {/* Desktop Menu */}
         <ul className="hidden md:flex gap-8 text-white font-semibold">
-          <li onClick={() => navigate("/")} className="cursor-pointer hover:text-red-500">Home</li>
-          <li onClick={() => navigate("/movies")} className="cursor-pointer hover:text-red-500">Movies</li>
-          <li onClick={() => navigate("/tv-series")} className="cursor-pointer hover:text-red-500">TV Shows</li>
-          <li onClick={() => navigate("/my-list")} className="cursor-pointer hover:text-red-500">My List</li>
+          <li onClick={() => handleNav("/")} className="cursor-pointer hover:text-red-500">Home</li>
+          <li onClick={() => handleNav("/movies")} className="cursor-pointer hover:text-red-500">Movies</li>
+          <li onClick={() => handleNav("/tv-series")} className="cursor-pointer hover:text-red-500">TV Shows</li>
+          <li onClick={() => handleNav("/my-list")} className="cursor-pointer hover:text-red-500">My List</li>
         </ul>
 
-        {/* Search + Account */}
-        <div className="flex items-center gap-5 text-white">
+        {/* Right Side */}
+        <div className="flex items-center gap-4 text-white">
 
-          {/* Search */}
+          {/* Search (hide on small) */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -39,7 +46,7 @@ export default function Navbar() {
               navigate(`/?search=${query}`);
               e.target.reset();
             }}
-            className="flex gap-2"
+            className="hidden md:flex gap-2"
           >
             <input
               name="search"
@@ -47,21 +54,51 @@ export default function Navbar() {
               className="bg-transparent border border-gray-500 rounded-full px-4 py-1 text-sm"
             />
             <button type="submit">
-              <Icon icon="mdi:magnify" width="28" />
+              <Icon icon="mdi:magnify" width="26" />
             </button>
           </form>
 
           {/* Account */}
           <Icon
             icon="mdi:account"
-            width="32"
+            width="30"
             className="cursor-pointer hover:text-red-600"
             onClick={() => setOpenLogin(true)}
+          />
+
+          {/* Hamburger (Mobile) */}
+          <Icon
+            icon="mdi:menu"
+            width="34"
+            className="md:hidden cursor-pointer"
+            onClick={() => setOpenMenu(!openMenu)}
           />
         </div>
       </div>
 
-      {/* Login Popup */}
+      {/* Mobile Menu */}
+      {openMenu && (
+        <div className="fixed top-[80px] left-0 w-full bg-gray-900 text-white flex flex-col items-center gap-6 py-6 md:hidden z-40">
+
+          <input
+            placeholder="Search..."
+            className="bg-transparent border border-gray-500 rounded-full px-4 py-2 text-sm w-4/5"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                navigate(`/?search=${e.target.value}`);
+                setOpenMenu(false);
+              }
+            }}
+          />
+
+          <span onClick={() => handleNav("/")} className="cursor-pointer hover:text-red-500">Home</span>
+          <span onClick={() => handleNav("/movies")} className="cursor-pointer hover:text-red-500">Movies</span>
+          <span onClick={() => handleNav("/tv-series")} className="cursor-pointer hover:text-red-500">TV Shows</span>
+          <span onClick={() => handleNav("/my-list")} className="cursor-pointer hover:text-red-500">My List</span>
+        </div>
+      )}
+
+      {/* Login Modal */}
       <LoginModal open={openLogin} onClose={() => setOpenLogin(false)} />
     </>
   );
