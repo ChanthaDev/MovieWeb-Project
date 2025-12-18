@@ -23,7 +23,7 @@ export default function Navbar() {
           className="text-2xl md:text-3xl font-bold text-red-600 cursor-pointer"
           onClick={() => handleNav("/")}
         >
-          Weflix
+          ETEC MOVIE
         </div>
 
         {/* Desktop Menu */}

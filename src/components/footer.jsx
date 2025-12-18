@@ -9,14 +9,9 @@ const Footer = () => {
 
         {/* Logo + Description */}
         <div>
-          <h2 className="text-2xl font-bold text-red-500 mb-3">Weflix</h2>
+          <h2 className="text-2xl font-bold text-red-500 mb-3">ETEC MOVIE</h2>
           <p className="text-sm leading-6">
-            Website មើលខ្សែភាពយន្តខ្មែរ & ខ្សែភាពយន្តបរទេស  
-            មើលបានគ្រប់ប្រភេទ HD Full.
-          </p>
-          <br />
-          <p>
-            Website to watch Khmer & foreign films, watch all types of HD Full
+            ETEC (Electrical and Electronic Engineering Technology) is a technical field that focuses on the study of electricity, electronics, and modern technology systems. It combines theoretical knowledge with practical skills to prepare students for real-world technical work. ETEC is important in today’s world because electrical and electronic systems are used in almost every industry.
           </p>
         </div>
 

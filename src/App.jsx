@@ -21,7 +21,7 @@ function App() {
         {/* Home + Search */}
         <Route path="/" element={<Home />} />
 
-        {/* Movie + TV pages */}
+        {/* Movie + TV pages */}npm run dev
         <Route
           path="/movies"
           element={<Movies myList={myList} setMyList={setMyList} />}
